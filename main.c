@@ -1,93 +1,92 @@
-/******************************************************************************
-
-                            Online C Compiler.
-                Code, Compile, Run and Debug C program online.
-Write your code in this editor and press "Run" button to compile and execute it.
-
-*******************************************************************************/
-
+// importa bibliotecas necessárias
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
 
+// define um tamanho máximo para a pilha
 #define TMN_MAXIMO 3
 
+// estrutura da pilha
 typedef struct{
-  char pilhaArray[TMN_MAXIMO][50];
-  int apontador;
-  int tamanho;
-} pilha;
+  char pilhaArray[TMN_MAXIMO][50]; // array de strings
+  int apontador; // indica o topo da pilha
+  int tamanho; // indica o tamanho da pilha
+} pilha; // nome da estrutura
 
+// função para inicializar a pilha
 void inicializarPilha(pilha* stack){
-  stack->apontador = -1;
-  stack->tamanho = 0;
+  stack->apontador = -1; // inicializa o apontador como -1 (pilha vazia)
+  stack->tamanho = 0; // define o tamanho como 0
 }
 
+// função para empilhar um item na pilha
 void empilhar(pilha* stack, const char* item){
-  if (stack->apontador < TMN_MAXIMO) {
-    stack->apontador++;
-    strncpy(stack->pilhaArray[stack->apontador], item, 50);
-    stack->pilhaArray[stack->apontador][49] = '\0';
-    stack->tamanho++;
-    return;
+  if (stack->apontador < TMN_MAXIMO) { // verifica se a pilha não está cheia
+    stack->apontador++; // incrementa o apontador 
+    strncpy(stack->pilhaArray[stack->apontador], item, 50); // copia o item para a pilha
+    stack->pilhaArray[stack->apontador][49] = '\0'; // garante que a string termina com \0
+    stack->tamanho++; // incrementa o tamanho da pilha
+    return; // sai da função
   }
-  
+  // se a pilha estivere cheia, não faz nada (stack overflow)
 }
 
+// função para desempilhar um item da pilha
 char* desempilhar(pilha* stack){
-  if (stack->apontador >= 0) {
-    char* retorno = stack->pilhaArray[stack->apontador];
-    stack->apontador--;
-    stack->tamanho--;
-    return retorno;
+  if (stack->apontador >= 0) { // verifica se a pilha não está vazia
+    char* retorno = stack->pilhaArray[stack->apontador]; // salva o item do topo que será desempilhado
+    stack->apontador--; // diminui o apontador
+    stack->tamanho--; // diminui o tamanho da pilha
+    return retorno; // retorna o item desempilhado
   }
-  return NULL; // Stack underflow
+  return NULL; // retorna NULL se a pilha estiver vazia (stack underflow)  
 }
 
+// função para exibir o histórico da pilha
 void exibirHistorico(pilha* stack){
-  for (int i = 0; i <= stack->apontador; i++){
-    printf("%s\n", stack->pilhaArray[i]);
+  for (int i = 0; i <= stack->apontador; i++){ // percorre todos os itens da pilha
+    printf("%s\n", stack->pilhaArray[i]); // exibe o item
   }
 }
 
+// função para exibir o menu e interagir com o usuário
 void menu(pilha* stack) {
     bool loop = true; // variável de controle do loop
-    while (loop) {
+    while (loop) { // loop principal
         int num;
-        printf("Escolha uma opção: \n 1 - Pesquisar \n 2 - Voltar \n 3 - Ver historico \n 4 - Sair \n");
-        // loop que repete até que a função scanf retorne que a atribuição da variável foi um sucesso
-        while (scanf("%d", &num) < 1) { 
-            printf("Escolha uma opção: \n 1 - Pesquisar \n 2 - Voltar \n 3 - Ver historico \n 4 - Sair \n");
-            while (getchar() != '\n'); // Isso limpa o buffer ou o input, mas não entendi bem como
+        printf("ESCOLHA UMA OPÇÃO: \n 1 - PESQUISAR \n 2 - VOLTAR \n 3 - HISTÓRICO \n 4 - SAIR \n");
+        while (scanf("%d", &num) < 1) { // verifica se o usuário digitou um número
+            printf("ESCOLHA UMA OPÇÃO: \n 1 - PESQUISAR \n 2 - VOLTAR \n 3 - HISTÓRICO \n 4 - SAIR \n");
+            while (getchar() != '\n'); // limpa o buffer de entrada
         }
-        // usa um switch para não ficar escrevendo if e else if
+        // switch para escolher a opção (melhor que if else)
         switch(num) {
             case 1:
-                char input[100]; // isso aqui deu problema por eu tentar usar um ponteiro pra um char sem memória alocada, então usei um array pra armazenar a string de caracteres
-                printf("Escreva o que deseja Pesquisar: ");
-                scanf(" %[^\n]", input); // não me pergunte. Só sei que o input não precisa do & por que toda variável de array já é um endereço de memória
-                empilhar(stack, input);
+                char input[100]; // declara um array de char
+                printf("\n PESQUISE O QUE DESEJA: "); // pede uma entrada do usuário 
+                scanf(" %[^\n]", input); // lê a entrada do usuário
+                empilhar(stack, input); // chama a função empilhar passando a entrada do usuário
                 break;
             case 2:
-                printf("%s \n", desempilhar(stack));
+                printf("%s \n", desempilhar(stack)); // chama a função desempilhar e exibe o item desempilhado
                 break;
             case 3:
-                exibirHistorico(stack);
+                exibirHistorico(stack); // exibe o histórico da pilha
                 break;
             case 4:
-                loop = false;
+                loop = false; // encerra o loop
                 break;
            
         }
     }
 }
 
+// funcão principal para executar o programa
 int main(void) {
-    
-  pilha historico;
-  inicializarPilha(&historico);
 
-  menu(&historico);
+  pilha historico; // declara uma variável do tipo pilha  
+  inicializarPilha(&historico); // inicializa a pilha
+  menu(&historico); // chama a função menu passando a pilha como argumento
 
-  return 0;
+  return 0; // retorna 0 para indicar que o programa foi encerrado
 }
