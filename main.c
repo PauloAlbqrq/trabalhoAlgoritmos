@@ -8,7 +8,7 @@
 #include <string.h>
 
 // define um tamanho máximo para a pilha
-#define TMN_MAXIMO 3
+#define TMN_MAXIMO 100
 
 // estrutura da pilha
 typedef struct {
